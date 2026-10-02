@@ -11,6 +11,7 @@ pub const Context = struct {
     alloc: std.mem.Allocator,
     io: std.Io,
     parsed: Parsed,
+    environ_map: *std.process.Environ.Map,
 };
 
 pub const ParseError = error{

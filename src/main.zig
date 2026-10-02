@@ -18,6 +18,7 @@ pub fn main(init: std.process.Init) !u8 {
         .alloc = init.gpa,
         .io = init.io,
         .parsed = parsed,
+        .environ_map = init.environ_map,
     };
 
     return switch (parsed.action) {
