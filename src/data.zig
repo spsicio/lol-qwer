@@ -21,9 +21,9 @@ const ChampionFull: type = struct {
     data: std.json.ArrayHashMap(Champion),
     version: []const u8,
 };
-const ParsedJson = std.json.Parsed(ChampionFull);
+pub const ParsedJson = std.json.Parsed(ChampionFull);
 
-pub const ChampionWithName = struct {
+const ChampionWithName = struct {
     champion: Champion,
     name: []const u8,
 };
@@ -53,6 +53,13 @@ pub fn parseFromFile(
 
     return std.json.parseFromTokenSource(ChampionFull, gpa, &jr, .{
         .ignore_unknown_fields = true,
+    });
+}
+
+pub fn parseFromBytes(bytes: []const u8, gpa: std.mem.Allocator) !ParsedJson {
+    return std.json.parseFromSlice(ChampionFull, gpa, bytes, .{
+        .ignore_unknown_fields = true,
+        .allocate = .alloc_always,
     });
 }
 
