@@ -1,8 +1,24 @@
 const std = @import("std");
 
+const zon_source: [:0]const u8 = @embedFile("build.zig.zon");
+
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    const optimize = b.standardOptimizeOption(.{});
+    const optimize = b.standardOptimizeOption(.{
+        .preferred_optimize_mode = .ReleaseSafe,
+    });
+    const strip = optimize != .Debug;
+
+    const Zon = struct { version: []const u8 };
+    const zon = std.zon.parse.fromSliceAlloc(
+        Zon,
+        b.allocator,
+        zon_source,
+        null,
+        .{ .ignore_unknown_fields = true },
+    ) catch @panic("invalid build.zig.zon");
+    const options = b.addOptions();
+    options.addOption([]const u8, "version", zon.version);
 
     const exe = b.addExecutable(.{
         .name = "qwer",
@@ -10,7 +26,10 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
-            .imports = &.{},
+            .strip = strip,
+            .imports = &.{
+                .{ .name = "build_options", .module = options.createModule() },
+            },
         }),
     });
 
