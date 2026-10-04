@@ -1,24 +1,15 @@
 const std = @import("std");
-
-const zon_source: [:0]const u8 = @embedFile("build.zig.zon");
+const manifest = @import("build.zig.zon");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{
-        .preferred_optimize_mode = .ReleaseSafe,
+        .preferred_optimize_mode = .safe,
     });
-    const strip = optimize != .Debug;
+    const strip = optimize != .debug;
 
-    const Zon = struct { version: []const u8 };
-    const zon = std.zon.parse.fromSliceAlloc(
-        Zon,
-        b.allocator,
-        zon_source,
-        null,
-        .{ .ignore_unknown_fields = true },
-    ) catch @panic("invalid build.zig.zon");
     const options = b.addOptions();
-    options.addOption([]const u8, "version", zon.version);
+    options.addOption([]const u8, "version", manifest.version);
 
     const exe = b.addExecutable(.{
         .name = "qwer",
@@ -39,9 +30,7 @@ pub fn build(b: *std.Build) void {
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
     run_step.dependOn(&run_cmd.step);
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
+    run_cmd.addPassthruArgs();
 
     const test_step = b.step("test", "Run tests");
     const exe_tests = b.addTest(.{

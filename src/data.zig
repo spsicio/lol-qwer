@@ -7,17 +7,17 @@ const Stats = struct {
     attackrange: u16,
 };
 
-const Spell: type = struct {
+const Spell = struct {
     cooldownBurn: []const u8,
     rangeBurn: []const u8,
 };
 
-const Champion: type = struct {
+const Champion = struct {
     stats: Stats,
     spells: []const Spell,
 };
 
-const ChampionFull: type = struct {
+const ChampionFull = struct {
     data: std.json.ArrayHashMap(Champion),
     version: []const u8,
 };

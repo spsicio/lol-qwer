@@ -5,7 +5,7 @@ pub const locale = "en_US";
 pub const versions_url = base_url ++ "/api/versions.json";
 
 pub fn getChampionUrl(alloc: std.mem.Allocator, version: []const u8) ![]u8 {
-    return std.fmt.allocPrint(alloc, "{s}/cdn/{s}/data/{s}/championFull.json", .{
+    return alloc.print("{s}/cdn/{s}/data/{s}/championFull.json", .{
         base_url, version, locale,
     });
 }

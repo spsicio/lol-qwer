@@ -4,7 +4,7 @@ const builtin = @import("builtin");
 pub const championPath = "championFull.json";
 
 fn getCachePath(alloc: std.mem.Allocator, env: *std.process.Environ.Map) ![]const u8 {
-    if (builtin.os.tag == .windows) {
+    if (builtin.target.os.tag == .windows) {
         const base = env.get("LOCALAPPDATA") orelse return error.NoCacheDir;
         return std.Io.Dir.path.join(alloc, &.{ base, "qwer" });
     }

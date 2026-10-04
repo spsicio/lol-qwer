@@ -21,6 +21,7 @@ pub fn updateJson(ctx: *const cli.Context) !data.ParsedJson {
     defer alloc.free(bytes);
 
     const parsed = try data.parseFromBytes(bytes, alloc);
+    errdefer parsed.deinit();
     try data.saveToFile(parsed, dir, paths.championPath, io);
     return parsed;
 }

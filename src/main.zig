@@ -15,11 +15,14 @@ pub fn main(init: std.process.Init) !u8 {
         return 1;
     };
 
+    const dir = try paths.getCacheDir(init.io, init.gpa, init.environ_map);
+    defer dir.close(init.io);
+
     const ctx: cli.Context = .{
         .alloc = init.gpa,
         .io = init.io,
         .parsed = parsed,
-        .dir = try paths.getCacheDir(init.io, init.gpa, init.environ_map),
+        .dir = dir,
     };
 
     return switch (parsed.action) {

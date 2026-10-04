@@ -49,7 +49,7 @@ pub fn run(ctx: *const cli.Context) !u8 {
         const sp = spells[i];
         try out.print("{s}  CD: {s}", .{ letter, sp.cooldownBurn });
         const cur = letter.len + "CD: ".len + sp.cooldownBurn.len;
-        try printSpaces(out, cd_width - cur + 2);
+        try out.splatByteAll(' ', cd_width - cur + 2);
         try out.print("Range: {s}\n", .{sp.rangeBurn});
     }
     try out.print("Move   Speed      {d}\n", .{stats.movespeed});
@@ -57,11 +57,4 @@ pub fn run(ctx: *const cli.Context) !u8 {
 
     try out.flush();
     return 0;
-}
-
-fn printSpaces(out: *std.Io.Writer, count: usize) !void {
-    var n = count;
-    while (n > 0) : (n -= 1) {
-        try out.writeByte(' ');
-    }
 }
